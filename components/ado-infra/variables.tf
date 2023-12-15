@@ -3,14 +3,19 @@ variable "subscription_id" {
   type        = string
 }
 
+variable "area" {
+  description = "area var passed by ado pipeline (cft/sds)"
+  type        = string
+}
+
 variable "mi_resource_group" {
-    description = "Managed Identity resource group"
-    type = string
+  description = "Managed Identity resource group"
+  type        = string
 }
 
 variable "sops_keyvault" {
-    description = "Keyvault which holds sops-key"
-    type = string
+  description = "Keyvault which holds sops-key"
+  type        = string
 }
 
 variable "env" {
@@ -37,8 +42,4 @@ variable "location" {
 variable "expiresAfter" {
   description = "Expiration date"
   default     = "3000-01-01"
-}
-
-variable "mi_rg" {
-  description = "Resource group that holds the Jenkins Managed Identity"
 }

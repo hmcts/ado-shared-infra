@@ -1,5 +1,3 @@
-name: "${{ parameters.action }} - ${{ parameters.env }}.${{ parameters.cluster }}.${{ parameters.location }}"
-
 trigger:
   batch: "true"
   branches:
@@ -51,6 +49,42 @@ parameters:
       component: 'ado-infra'
       service_connection: 'OPS-APPROVAL-GATE-PTL-ENVS'
       dependsOn: 'Precheck'
+    - deployment: 'sds_dev_ado'
+      area: 'sds'
+      environment: 'dev'
+      component: 'ado-infra'
+      service_connection: 'DTS-SHAREDSERVICES-DEV'
+      dependsOn: 'Precheck'
+    - deployment: 'sds_ithc_ado'
+      area: 'sds'
+      environment: 'ithc'
+      component: 'ado-infra'
+      service_connection: 'DTS-SHAREDSERVICES-ITHC'
+      dependsOn: 'Precheck'
+    - deployment: 'sds_sbox_ado'
+      area: 'sds'
+      environment: 'sbox'
+      component: 'ado-infra'
+      service_connection: 'DTS-SHAREDSERVICES-SBOX'
+      dependsOn: 'Precheck'
+    - deployment: 'sds_stg_ado'
+      area: 'sds'
+      environment: 'stg'
+      component: 'ado-infra'
+      service_connection: 'DTS-SHAREDSERVICES-STG'
+      dependsOn: 'Precheck'
+    - deployment: 'sds_test_ado'
+      area: 'sds'
+      environment: 'test'
+      component: 'ado-infra'
+      service_connection: 'DTS-SHAREDSERVICES-TEST'
+      dependsOn: 'Precheck'
+    - deployment: 'sds_prod_ado'
+      area: 'sds'
+      environment: 'prod'
+      component: 'ado-infra'
+      service_connection: 'DTS-SHAREDSERVICES-PROD'
+      dependsOn: 'Precheck'
 
 variables:
   - name: timeoutInMinutes
@@ -60,7 +94,7 @@ variables:
   - name: build
     value: $(Build.BuildNumber)
   - name: product
-    value: ${{ parameters.area }}-ado-infra
+    value: cft-platform
   - name: terraformInitSubscription
     value: 04d27a32-7a07-48b3-95b8-3c8691e1a263
 
@@ -96,4 +130,6 @@ stages:
               serviceConnection: ${{ deployment.service_connection }}
               terraformInitSubscription: ${{ variables.terraformInitSubscription }}
               product: ${{ variables.product }}
-              tfVarsFile: "$(System.DefaultWorkingDirectory)/$(buildRepoSuffix)/environments/${{ parameters.area }}/${{ parameters.env }}.tfvars"
+              tfVarsFile: "$(System.DefaultWorkingDirectory)/$(buildRepoSuffix)/environments/${{ deployment.area }}/${{ deployment.environment }}.tfvars"
+              terraformEnvironmentVariables:
+                TF_VAR_area: ${{ deployment.area }}
