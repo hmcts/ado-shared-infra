@@ -1,0 +1,99 @@
+name: "${{ parameters.action }} - ${{ parameters.env }}.${{ parameters.cluster }}.${{ parameters.location }}"
+
+trigger:
+  batch: "true"
+  branches:
+    include:
+    - master
+
+resources:
+  repositories:
+    - repository: cnp-azuredevops-libraries
+      type: github
+      ref: refs/heads/master
+      name: hmcts/cnp-azuredevops-libraries
+      endpoint: 'hmcts'
+
+parameters:
+  - name: overrideAction
+    displayName: Action
+    type: string
+    default: 'plan'
+    values:
+    - plan
+    - apply
+    - destroy
+
+  - name: environment_components
+    type: object
+    default:
+    - deployment: 'cft_ptlsbox_ado'
+      area: 'cft'
+      environment: 'ptlsbox'
+      component: 'ado-infra'
+      service_connection: 'DTS-CFTSBOX-INTSVC'
+      dependsOn: 'Precheck'
+    - deployment: 'cft_ptl_ado'
+      area: 'cft'
+      environment: 'ptl'
+      component: 'ado-infra'
+      service_connection: 'DTS-CFTPTL-INTSVC'
+      dependsOn: 'Precheck'
+    - deployment: 'sds_ptlsbox_ado'
+      area: 'sds'
+      environment: 'ptlsbox'
+      component: 'ado-infra'
+      service_connection: 'OPS-APPROVAL-GATE-PTLSBOX-ENVS'
+      dependsOn: 'Precheck'
+    - deployment: 'sds_ptl_ado'
+      environment: 'ptl'
+      area: 'sds'
+      component: 'ado-infra'
+      service_connection: 'OPS-APPROVAL-GATE-PTL-ENVS'
+      dependsOn: 'Precheck'
+
+variables:
+  - name: timeoutInMinutes
+    value: 60
+  - name: agentPool
+    value: ubuntu-latest
+  - name: build
+    value: $(Build.BuildNumber)
+  - name: product
+    value: ${{ parameters.area }}-ado-infra
+  - name: terraformInitSubscription
+    value: 04d27a32-7a07-48b3-95b8-3c8691e1a263
+
+stages:
+  - stage: Precheck
+    jobs:
+      - job: Precheck
+        pool:
+          vmImage: ${{ variables.agentPool }}
+        timeoutInMinutes: ${{ variables.timeoutInMinutes }}
+        steps:
+          - template: steps/terraform-precheck.yaml@cnp-azuredevops-libraries
+            parameters:
+              keyvaultName: 'infra-vault-nonprod'
+              keyvaultSecret: 'azure-devops-sp-token'
+              serviceConnection: 'DCD-CFT-Sandbox'
+              overrideAction: ${{ parameters.overrideAction }}
+
+  - ${{ each deployment in parameters.environment_components }}:
+    - stage: ${{ deployment.deployment }}
+      dependsOn: ${{ deployment.dependsOn }}
+      jobs:
+        - job: TerraformPlanApply
+          pool:
+            vmImage: ${{ variables.agentPool }}
+          timeoutInMinutes: ${{ variables.timeoutInMinutes }}
+          steps:
+          - template: steps/terraform.yaml@cnp-azuredevops-libraries
+            parameters:
+              overrideAction: ${{ parameters.overrideAction }}
+              environment: ${{ deployment.environment }}
+              component: ${{ deployment.component }}
+              serviceConnection: ${{ deployment.service_connection }}
+              terraformInitSubscription: ${{ variables.terraformInitSubscription }}
+              product: ${{ variables.product }}
+              tfVarsFile: "$(System.DefaultWorkingDirectory)/$(buildRepoSuffix)/environments/${{ parameters.area }}/${{ parameters.env }}.tfvars"
