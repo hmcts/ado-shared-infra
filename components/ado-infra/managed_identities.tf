@@ -19,7 +19,7 @@ resource "azurerm_user_assigned_identity" "azure-devops-mi" {
   resource_group_name = data.azurerm_resource_group.mi-rg.name
   location            = data.azurerm_resource_group.mi-rg.location
 
-  name = var.env == "ptlsbox" ? "azure-devops-cftsbox-intsvc-mi" : var.env == "ptl" ? "azure-devops-cftptl-intsvc-mi" : "azure-devops-${var.env}-mi"
+  name = var.env == "ptlsbox" && var.area == "cft" ? "azure-devops-cftsbox-intsvc-mi" : var.env == "ptl" && var.area == "cft" ? "azure-devops-cftptl-intsvc-mi" : "azure-devops-${var.env}-mi"
   tags = module.ctags.common_tags
 }
 
