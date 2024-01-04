@@ -13,12 +13,6 @@ variable "mi_resource_group" {
   type        = string
 }
 
-variable "aks_managed_identity_object_name" {
-  description = "Name of Managed Identity resource as derived from other vars"
-  type        = string
-  default     = var.env == "ptlsbox" && var.area == "cft" ? "azure-devops-cftsbox-intsvc-mi" : var.env == "ptl" && var.area == "cft" ? "azure-devops-cftptl-intsvc-mi" : "azure-devops-${var.env}-mi"
-}
-
 variable "mi_storage_account_prefixes_nonprod" {
   description = "List of MI/SDP storage account prefixes for permission assignment in non-prod envs"
   type        = list(string)

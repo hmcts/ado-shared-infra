@@ -1,3 +1,6 @@
+locals {
+  managed_identity_object_name = var.env == "ptlsbox" && var.area == "cft" ? "azure-devops-cftsbox-intsvc-mi" : var.env == "ptl" && var.area == "cft" ? "azure-devops-cftptl-intsvc-mi" : "azure-devops-${var.env}-mi"
+}
 module "ctags" {
   source       = "git::https://github.com/hmcts/terraform-module-common-tags.git?ref=master"
   environment  = var.env
@@ -19,7 +22,7 @@ resource "azurerm_user_assigned_identity" "azure-devops-mi" {
   resource_group_name = data.azurerm_resource_group.mi-rg.name
   location            = data.azurerm_resource_group.mi-rg.location
 
-  name = var.aks_managed_identity_object_name
+  name = local.managed_identity_object_name
   tags = module.ctags.common_tags
 }
 
