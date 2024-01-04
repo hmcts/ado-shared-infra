@@ -33,38 +33,62 @@ resource "azurerm_role_assignment" "sops-kv-reader" {
   scope                = data.azurerm_key_vault.sops-kv.id
 }
 
-## assigning permissions for SS Pipeline Agents Managed Identity for MI/SDP apps in non-prod
-data "azurerm_storage_account" "mi_landing_storage_accounts_nonprod" {
-  for_each = { for sa in var.mi_storage_account_prefixes_nonprod : sa => sa if contains(var.mi_storage_account_prefixes_nonprod, sa) }
-  count    = var.env == "prod" ? 0 : 1
+# ## assigning permissions for SS Pipeline Agents Managed Identity for MI/SDP apps in non-prod
+# data "azurerm_storage_account" "mi_landing_storage_accounts_nonprod" {
+#   for_each = { for sa in var.mi_storage_account_prefixes_nonprod : sa => sa if contains(var.mi_storage_account_prefixes_nonprod, sa) }
+#   count    = var.env == "prod" ? 0 : 1
 
-  name                = "${each.key}${var.env}"
-  resource_group_name = "mi-${var.env}-rg"
+#   name                = "${each.key}${var.env}"
+#   resource_group_name = "mi-${var.env}-rg"
+# }
+
+# resource "azurerm_role_assignment" "storage_account_role_assignment_nonprod" {
+#   for_each = data.azurerm_storage_account.mi_landing_storage_accounts_nonprod
+#   count    = var.env == "prod" ? 0 : 1
+
+#   scope                = each.value.id
+#   principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+#   role_definition_name = "Storage Blob Data Contributor"
+# }
+
+data "azurerm_storage_account" "mi_landing_storage_accounts_nonprod" {
+  count = var.env == "prod" ? 0 : 1
+
+  for_each = count.index > 0 ? {} : {
+    for sa in var.mi_storage_account_prefixes_nonprod : sa => {
+      name                = "${sa}${var.env}"
+      resource_group_name = "mi-${var.env}-rg"
+    }
+  }
 }
 
 resource "azurerm_role_assignment" "storage_account_role_assignment_nonprod" {
-  for_each = data.azurerm_storage_account.mi_landing_storage_accounts_nonprod
-  count    = var.env == "prod" ? 0 : 1
+  count = var.env == "prod" ? 0 : 1
 
-  scope                = each.value.id
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
-  role_definition_name = "Storage Blob Data Contributor"
+  for_each = toset([for sa, config in data.azurerm_storage_account.mi_landing_storage_accounts_nonprod : {
+    scope                = config.id
+    principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+    role_definition_name = "Storage Blob Data Contributor"
+  }])
 }
 
-## assigning permissions for SS Pipeline Agents Managed Identity for MI/SDP apps in prod
-data "azurerm_storage_account" "mi_landing_storage_accounts_prod" {
-  for_each = { for sa in var.mi_storage_account_prefixes_prod : sa => sa if contains(var.mi_storage_account_prefixes_prod, sa) }
-  count    = var.env == "prod" ? 1 : 0
 
-  name                = "${each.key}${var.env}"
-  resource_group_name = "mi-${var.env}-rg"
-}
 
-resource "azurerm_role_assignment" "storage_account_role_assignment_prod" {
-  for_each = data.azurerm_storage_account.mi_landing_storage_accounts_prod
-  count    = var.env == "prod" ? 1 : 0
 
-  scope                = each.value.id
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
-  role_definition_name = "Storage Blob Data Contributor"
-}
+# ## assigning permissions for SS Pipeline Agents Managed Identity for MI/SDP apps in prod
+# data "azurerm_storage_account" "mi_landing_storage_accounts_prod" {
+#   for_each = { for sa in var.mi_storage_account_prefixes_prod : sa => sa if contains(var.mi_storage_account_prefixes_prod, sa) }
+#   count    = var.env == "prod" ? 1 : 0
+
+#   name                = "${each.key}${var.env}"
+#   resource_group_name = "mi-${var.env}-rg"
+# }
+
+# resource "azurerm_role_assignment" "storage_account_role_assignment_prod" {
+#   for_each = data.azurerm_storage_account.mi_landing_storage_accounts_prod
+#   count    = var.env == "prod" ? 1 : 0
+
+#   scope                = each.value.id
+#   principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+#   role_definition_name = "Storage Blob Data Contributor"
+# }
