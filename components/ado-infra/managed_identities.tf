@@ -53,6 +53,12 @@ data "azurerm_storage_account" "mi_export_storage_account" {
   name                = "miexport${var.env}"
   resource_group_name = "mi-${var.env}-rg"
 }
+data "azurerm_storage_account" "mi_polybasestaging_storage_account" {
+  count = var.env == "prod" || var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
+
+  name                = "mipolybasestaging${var.env}"
+  resource_group_name = "mi-${var.env}-rg"
+}
 data "azurerm_storage_account" "mi_audit_storage_account" {
   count = var.env == "prod" || var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
@@ -66,7 +72,7 @@ data "azurerm_storage_account" "mi_adhoclanding_storage_account" {
   resource_group_name = "mi-${var.env}-rg"
 }
 data "azurerm_storage_account" "mi_apintegration_storage_account" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "ithc" ? 0 : 1
 
   name                = "miapintegration${var.env}"
   resource_group_name = "mi-${var.env}-rg"
@@ -86,7 +92,6 @@ resource "azurerm_role_assignment" "mi_landing_contributor" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = local.managed_identity_object_name
 }
-
 resource "azurerm_role_assignment" "mi_pds_contributor" {
   count = var.env == "prod" || var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
@@ -94,7 +99,6 @@ resource "azurerm_role_assignment" "mi_pds_contributor" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = local.managed_identity_object_name
 }
-
 resource "azurerm_role_assignment" "mi_export_contributor" {
   count = var.env == "prod" || var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
@@ -102,7 +106,6 @@ resource "azurerm_role_assignment" "mi_export_contributor" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = local.managed_identity_object_name
 }
-
 resource "azurerm_role_assignment" "mi_audit_contributor" {
   count = var.env == "prod" || var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
@@ -110,7 +113,13 @@ resource "azurerm_role_assignment" "mi_audit_contributor" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = local.managed_identity_object_name
 }
+resource "azurerm_role_assignment" "mi_polybasestaging_contributor" {
+  count = var.env == "prod" || var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
+  scope                = azurerm_storage_account.mi_polybasestaging_storage_account.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = local.managed_identity_object_name
+}
 resource "azurerm_role_assignment" "mi_adhoc_contributor" {
   count = var.env == "prod" || var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
@@ -118,15 +127,13 @@ resource "azurerm_role_assignment" "mi_adhoc_contributor" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = local.managed_identity_object_name
 }
-
 resource "azurerm_role_assignment" "aks_mi_apintegration_contributor" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "ithc" ? 0 : 1
 
   scope                = azurerm_storage_account.mi_apintegration_storage_account.id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = local.managed_identity_object_name
 }
-
 resource "azurerm_role_assignment" "aks_mi_datasharelanding_contributor" {
   count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
