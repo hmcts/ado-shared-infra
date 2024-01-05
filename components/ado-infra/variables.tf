@@ -13,18 +13,6 @@ variable "mi_resource_group" {
   type        = string
 }
 
-variable "mi_storage_account_prefixes_nonprod" {
-  description = "List of MI/SDP storage account prefixes for permission assignment in non-prod envs"
-  type        = list(string)
-  default     = ["milanding", "mipersistent", "miexport", "miaudit", "miadhoclanding", "miapintegration", "midatasharelanding"]
-}
-
-variable "mi_storage_account_prefixes_prod" {
-  description = "List of MI/SDP storage account prefixes for permission assignment in prod env"
-  type        = list(string)
-  default     = ["miapintegration", "midatasharelanding"]
-}
-
 variable "sops_keyvault" {
   description = "Keyvault which holds sops-key"
   type        = string
