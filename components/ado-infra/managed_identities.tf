@@ -11,7 +11,8 @@ module "ctags" {
 }
 
 data "azurerm_resource_group" "mi-rg" {
-  name = var.mi_resource_group
+  provider = azurerm.workload_identity
+  name     = var.mi_resource_group
 }
 
 data "azurerm_key_vault" "sops-kv" {
