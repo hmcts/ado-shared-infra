@@ -21,12 +21,19 @@ data "azurerm_key_vault" "sops-kv" {
 
 }
 resource "azurerm_user_assigned_identity" "azure-devops-mi" {
-  provider = azurerm.workload_identity
+  count               = var.env == "dev" ? 0 : 1
   resource_group_name = data.azurerm_resource_group.mi-rg.name
   location            = data.azurerm_resource_group.mi-rg.location
 
   name = local.managed_identity_object_name
   tags = module.ctags.common_tags
+}
+
+data "azurerm_user_assigned_identity" "azure-devops-mi" {
+  provider            = azurerm.workload_identity
+  name                = local.managed_identity_object_name
+  resource_group_name = data.azurerm_resource_group.mi-rg.name
+  location            = data.azurerm_resource_group.mi-rg.location
 }
 
 resource "azurerm_role_assignment" "sops-kv-reader" {
@@ -92,54 +99,54 @@ resource "azurerm_role_assignment" "mi_landing_contributor" {
 
   scope                = data.azurerm_storage_account.mi_landing_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+  principal_id         = var.env == "dev" ? data.azurerm_user_assigned_identity.azure-devops-mi : azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "mi_pds_contributor" {
   count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_persistent_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+  principal_id         = var.env == "dev" ? data.azurerm_user_assigned_identity.azure-devops-mi : azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "mi_export_contributor" {
   count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_export_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+  principal_id         = var.env == "dev" ? data.azurerm_user_assigned_identity.azure-devops-mi : azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "mi_audit_contributor" {
   count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_audit_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+  principal_id         = var.env == "dev" ? data.azurerm_user_assigned_identity.azure-devops-mi : azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "mi_polybasestaging_contributor" {
   count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_polybasestaging_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+  principal_id         = var.env == "dev" ? data.azurerm_user_assigned_identity.azure-devops-mi : azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "mi_adhoc_contributor" {
   count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_adhoclanding_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+  principal_id         = var.env == "dev" ? data.azurerm_user_assigned_identity.azure-devops-mi : azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "aks_mi_apintegration_contributor" {
   count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "ithc" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_apintegration_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+  principal_id         = var.env == "dev" ? data.azurerm_user_assigned_identity.azure-devops-mi : azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "aks_mi_datasharelanding_contributor" {
   count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_datasharelanding_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+  principal_id         = var.env == "dev" ? data.azurerm_user_assigned_identity.azure-devops-mi : azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
