@@ -37,7 +37,7 @@ data "azurerm_user_assigned_identity" "azure-devops-mi" {
 
 resource "azurerm_role_assignment" "sops-kv-reader" {
   # DTS Bootstrap Principal_id
-  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+  principal_id         = azurerm_user_assigned_identity.azure-devops-mi[0].principal_id
   role_definition_name = "Reader"
   scope                = data.azurerm_key_vault.sops-kv.id
 }
