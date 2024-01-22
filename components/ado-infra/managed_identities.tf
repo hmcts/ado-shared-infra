@@ -1,5 +1,6 @@
 locals {
-  managed_identity_object_name = var.env == "ptlsbox" && var.area == "cft" ? "azure-devops-cftsbox-intsvc-mi" : var.env == "ptl" && var.area == "cft" ? "azure-devops-cftptl-intsvc-mi" : "azure-devops-${var.env}-mi"
+  managed_identity_object_name = var.env == "ptlsbox" && var.area == "cft" ? "azure-devops-cftsbox-intsvc-mi" : var.env == "dev" ? "azure-devops-stg-mi" : var.env == "ptl" && var.area == "cft" ? "azure-devops-cftptl-intsvc-mi" : "azure-devops-${var.env}-mi"
+  workload_identity_environment = var.env == "dev" ? "stg" : var.env 
 }
 
 module "ctags" {
@@ -11,7 +12,7 @@ module "ctags" {
 }
 
 data "azurerm_resource_group" "mi-rg" {
-  name = var.mi_resource_group
+  name = "managed-identities-${workload_identity_environment}-rg"
 }
 
 data "azurerm_key_vault" "sops-kv" {
