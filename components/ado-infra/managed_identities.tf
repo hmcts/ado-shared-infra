@@ -33,7 +33,6 @@ data "azurerm_user_assigned_identity" "azure-devops-mi" {
   provider            = azurerm.workload_identity
   name                = local.managed_identity_object_name
   resource_group_name = data.azurerm_resource_group.mi-rg.name
-  location            = data.azurerm_resource_group.mi-rg.location
 }
 
 resource "azurerm_role_assignment" "sops-kv-reader" {
