@@ -94,6 +94,15 @@ resource "azurerm_role_assignment" "mi_landing_contributor" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
+
+resource "azurerm_role_assignment" "mi_polybasestaging_owner" {
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
+
+  scope                = data.azurerm_storage_account.mi_polybasestaging_storage_account[count.index].id
+  role_definition_name = "Storage Blob Data Owner"
+  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+}
+
 resource "azurerm_role_assignment" "mi_pds_contributor" {
   count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
 
