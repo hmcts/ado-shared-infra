@@ -86,6 +86,13 @@ data "azurerm_storage_account" "mi_datasharelanding_storage_account" {
   resource_group_name = "mi-${var.env}-rg"
 }
 
+data "azurerm_storage_account" "mi_externalsharing_storage_account" {
+  count = var.env == "prod" ? 1 : 0
+
+  name                = "miexternalsharing${var.env}"
+  resource_group_name = "mi-${var.env}-rg"
+}
+
 ## assigning permissions for SS Pipeline Agents Managed Identity for MI/SDP apps
 resource "azurerm_role_assignment" "mi_landing_contributor" {
   count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" ? 0 : 1
@@ -150,5 +157,13 @@ resource "azurerm_role_assignment" "aks_mi_datasharelanding_contributor" {
 
   scope                = data.azurerm_storage_account.mi_datasharelanding_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
+}
+
+resource "azurerm_role_assignment" "mi_externalsharing_contributor" {
+  count = var.env == "prod" ? 1 : 0
+
+  scope                = data.azurerm_storage_account.mi_externalsharing_storage_account[count.index].id
+  role_definition_name = "Storage Blob Data Owner"
   principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
