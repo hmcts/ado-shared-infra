@@ -38,49 +38,49 @@ resource "azurerm_role_assignment" "sops-kv-reader" {
 
 ## data sources for MI/SDP app storage accounts 
 data "azurerm_storage_account" "mi_landing_storage_account" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   name                = "milanding${var.env}"
   resource_group_name = "mi-${var.env}-rg"
 }
 data "azurerm_storage_account" "mi_persistent_storage_account" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   name                = "mipersistent${var.env}"
   resource_group_name = "mi-${var.env}-rg"
 }
 data "azurerm_storage_account" "mi_export_storage_account" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   name                = "miexport${var.env}"
   resource_group_name = "mi-${var.env}-rg"
 }
 data "azurerm_storage_account" "mi_polybasestaging_storage_account" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   name                = "mipolybasestaging${var.env}"
   resource_group_name = "mi-${var.env}-rg"
 }
 data "azurerm_storage_account" "mi_audit_storage_account" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   name                = "miaudit${var.env}"
   resource_group_name = "mi-${var.env}-rg"
 }
 data "azurerm_storage_account" "mi_adhoclanding_storage_account" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   name                = "miadhoclanding${var.env}"
   resource_group_name = "mi-${var.env}-rg"
 }
 data "azurerm_storage_account" "mi_apintegration_storage_account" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "ithc" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "ithc" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   name                = "miapintegration${var.env}"
   resource_group_name = "mi-${var.env}-rg"
 }
 data "azurerm_storage_account" "mi_datasharelanding_storage_account" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   name                = "midatasharelanding${var.env}"
   resource_group_name = "mi-${var.env}-rg"
@@ -95,7 +95,7 @@ data "azurerm_storage_account" "mi_externalsharing_storage_account" {
 
 ## assigning permissions for SS Pipeline Agents Managed Identity for MI/SDP apps
 resource "azurerm_role_assignment" "mi_landing_contributor" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_landing_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
@@ -103,7 +103,7 @@ resource "azurerm_role_assignment" "mi_landing_contributor" {
 }
 
 resource "azurerm_role_assignment" "mi_polybasestaging_owner" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_polybasestaging_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Owner"
@@ -111,49 +111,49 @@ resource "azurerm_role_assignment" "mi_polybasestaging_owner" {
 }
 
 resource "azurerm_role_assignment" "mi_pds_contributor" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_persistent_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "mi_export_contributor" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_export_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "mi_audit_contributor" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_audit_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "mi_polybasestaging_contributor" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_polybasestaging_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "mi_adhoc_contributor" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_adhoclanding_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "aks_mi_apintegration_contributor" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "ithc" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "ithc" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_apintegration_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_user_assigned_identity.azure-devops-mi.principal_id
 }
 resource "azurerm_role_assignment" "aks_mi_datasharelanding_contributor" {
-  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" | var.env == "preview" | var.env == "aat" ? 0 : 1
+  count = var.env == "sbox" || var.env == "ptl" || var.env == "ptlsbox" || var.env == "preview" || var.env == "aat" ? 0 : 1
 
   scope                = data.azurerm_storage_account.mi_datasharelanding_storage_account[count.index].id
   role_definition_name = "Storage Blob Data Contributor"
