@@ -41,7 +41,7 @@ parameters:
       environment: 'ptl'
       component: 'ado-infra'
       service_connection: 'DTS-CFTPTL-INTSVC'
-      dependsOn: 'Precheck'
+      dependsOn: 'cft_dev_ado'
     - deployment: 'sds_ptlsbox_ado'
       area: 'sds'
       environment: 'ptlsbox'
