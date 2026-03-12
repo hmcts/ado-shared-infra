@@ -1,3 +1,3 @@
-subscription_id   = "1c4f0704-a29e-403d-b719-b90c34ef14c9"
+subscription_id   = "8b6ea922-0862-443e-af15-6056e1c9b9a4"
 mi_resource_group = "managed-identities-aat-rg"
 sops_keyvault     = "dcdcftappsdevkv"
