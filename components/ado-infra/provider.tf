@@ -1,5 +1,6 @@
 locals {
-  stg_subscription = "74dacd4f-a248-45bb-a2f0-af700dc4cf68"
+  stg_subscription     = "74dacd4f-a248-45bb-a2f0-af700dc4cf68"
+  preview_subscription = "1c4f0704-a29e-403d-b719-b90c34ef14c9"
 }
 
 terraform {
@@ -25,5 +26,5 @@ provider "azurerm" {
 provider "azurerm" {
   features {}
   alias           = "workload_identity"
-  subscription_id = var.env == "dev" ? local.stg_subscription : var.subscription_id
+  subscription_id = var.env == "dev" ? local.stg_subscription : var.env == "preview" ? local.preview_subscription : var.env == "aat" ? local.preview_subscription : var.subscription_id
 }

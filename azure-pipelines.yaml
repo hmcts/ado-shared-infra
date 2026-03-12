@@ -31,12 +31,26 @@ parameters:
       component: 'ado-infra'
       service_connection: 'DTS-CFTSBOX-INTSVC'
       dependsOn: 'Precheck'
+    - deployment: 'cft_aat_ado'
+      area: 'cft'
+      environment: 'aat'
+      component: 'ado-infra'
+      service_connection: 'DCD-CFTAPPS-DEV'
+      backendAzureRmResourceGroupName: "azure-control-dev-rg"
+      dependsOn: 'cft_ptlsbox_ado'
+    - deployment: 'cft_preview_ado'
+      area: 'cft'
+      environment: 'preview'
+      component: 'ado-infra'
+      service_connection: 'DCD-CFTAPPS-DEV'
+      backendAzureRmResourceGroupName: "azure-control-dev-rg"
+      dependsOn: 'cft_ptlsbox_ado'
     - deployment: 'cft_ptl_ado'
       area: 'cft'
       environment: 'ptl'
       component: 'ado-infra'
       service_connection: 'DTS-CFTPTL-INTSVC'
-      dependsOn: 'Precheck'
+      dependsOn: 'cft_aat_ado'
     - deployment: 'sds_ptlsbox_ado'
       area: 'sds'
       environment: 'ptlsbox'
@@ -130,6 +144,7 @@ stages:
               serviceConnection: ${{ deployment.service_connection }}
               terraformInitSubscription: ${{ variables.terraformInitSubscription }}
               product: ${{ variables.product }}
+              backendResourceGroupName: ${{ deployment.backendAzureRmResourceGroupName }}
               tfVarsFile: "$(System.DefaultWorkingDirectory)/$(buildRepoSuffix)/environments/${{ deployment.area }}/${{ deployment.environment }}.tfvars"
               terraformEnvironmentVariables:
                 TF_VAR_area: ${{ deployment.area }}
