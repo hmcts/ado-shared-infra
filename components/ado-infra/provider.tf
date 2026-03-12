@@ -26,5 +26,5 @@ provider "azurerm" {
 provider "azurerm" {
   features {}
   alias           = "workload_identity"
-  subscription_id = var.env == "dev" ? local.stg_subscription || var.env == "preview" ? local.preview_subscription : var.subscription_id
+  subscription_id = var.env == "dev" ? local.stg_subscription : var.env == "preview" ? local.preview_subscription : var.subscription_id
 }
