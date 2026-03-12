@@ -36,7 +36,7 @@ parameters:
       environment: 'aat'
       component: 'ado-infra'
       dependsOn: 'cft_ptlsbox_ado'
-    - deployment: 'cft_aat_ado'
+    - deployment: 'cft_preview_ado'
       area: 'cft'
       environment: 'preview'
       component: 'ado-infra'
