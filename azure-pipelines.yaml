@@ -144,6 +144,7 @@ stages:
               serviceConnection: ${{ deployment.service_connection }}
               terraformInitSubscription: ${{ variables.terraformInitSubscription }}
               product: ${{ variables.product }}
+              backendAzureRmResourceGroupName: ${{ deployment.backendAzureRmResourceGroupName }}
               tfVarsFile: "$(System.DefaultWorkingDirectory)/$(buildRepoSuffix)/environments/${{ deployment.area }}/${{ deployment.environment }}.tfvars"
               terraformEnvironmentVariables:
                 TF_VAR_area: ${{ deployment.area }}
