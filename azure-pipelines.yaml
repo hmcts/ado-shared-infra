@@ -35,7 +35,7 @@ parameters:
       area: 'cft'
       environment: 'aat'
       component: 'ado-infra'
-      service_connection: 'DCD-CNP-DEV'
+      service_connection: 'DCD-CFTAPPS-DEV'
       backendAzureRmResourceGroupName: "azure-control-dev-rg"
       dependsOn: 'cft_ptlsbox_ado'
     - deployment: 'cft_preview_ado'
