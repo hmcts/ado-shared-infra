@@ -1,6 +1,6 @@
 locals {
   stg_subscription     = "74dacd4f-a248-45bb-a2f0-af700dc4cf68"
-  preview_subscription = "8b6ea922-0862-443e-af15-6056e1c9b9a4"
+  preview_subscription = "1c4f0704-a29e-403d-b719-b90c34ef14c9"
 }
 
 terraform {
